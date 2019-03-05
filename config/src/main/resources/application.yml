@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/do-better/SpringCloud_Config.git
+          username:
+          password:
+#          basedir: /Users/admin/code/myProjects/java/imooc/SpringCloud_Sell/config/basedir
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+#      暴露bus-refresh接口，实现自动更新配置
+#management:
+#  endpoints:
+#    web:
+#      expose: "*"

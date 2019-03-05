@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.order.repository.OrderMasterDao">
+    <select id="findByProductIdAndOpenId" resultType="com.imooc.order.dataobject.SeckillOrderDetail">
+        SELECT od.detail_id AS detailId, od.order_id AS orderId, od.buyer_openid as buyerOpenid,
+        od.product_id as productId, od.product_name as productName, od.product_price as productPrice, od.product_quantity as productQuantity, od.product_icon as productIcon
+        FROM seckill_order_detail od
+        INNER JOIN order_master om
+        ON od.order_id = om.order_id
+        AND od.product_id = #{productId}
+        AND om.buyer_openid = #{openId}
+    </select>
+</mapper>
