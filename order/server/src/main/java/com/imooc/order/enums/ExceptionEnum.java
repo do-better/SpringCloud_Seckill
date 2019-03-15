@@ -14,7 +14,7 @@ public enum ExceptionEnum {
     ORDER_STATUS_ERROR(4, "订单状态错误"),
     ORDER_DETAIL_NOT_EXIST(5, "订单详情不存在"),
     SECKILL_QUANTITY_ERROR(6, "一次只能秒杀一个商品"),
-    DECREASE_STOCK_ERROR(7, "口库存失败"),
+    DECREASE_STOCK_ERROR(7, "扣库存失败"),
     SECKILL_ORDER_ERROR(8, "秒杀下单异常")
     ;
 

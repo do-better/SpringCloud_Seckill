@@ -43,4 +43,6 @@ public class ProductInfo {
     private Date createTime;
 
     private Date updateTime;
+
+    private Integer version;
 }

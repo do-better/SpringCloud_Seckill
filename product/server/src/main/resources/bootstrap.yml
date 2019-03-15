@@ -16,7 +16,7 @@ eureka:
 
 logging:
   level:
-    root: error
+#    root: info
 #  level:
-#    org.springframework.cloud.netflix.feign: debug
+    org.springframework.cloud.netflix.feign: debug
 #    com.imooc.product.repository: debug

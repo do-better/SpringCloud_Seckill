@@ -25,6 +25,7 @@ create table `product_info` (
     `category_type` int not null comment '类目编号',
     `create_time` timestamp not null default current_timestamp comment '创建时间',
     `update_time` timestamp not null default current_timestamp on update current_timestamp comment '修改时间',
+    `version` int(20) DEFAULT NULL comment '并发控制锁，乐观锁',
     primary key (`product_id`)
 );
 INSERT INTO `product_info` (`product_id`, `product_name`, `product_price`, `product_stock`, `product_description`, `product_icon`, `product_status`, `category_type`, `create_time`, `update_time`)

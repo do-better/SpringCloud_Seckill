@@ -33,4 +33,6 @@ public class ProductInfoOutput {
 
     /** 类目编号. */
     private Integer categoryType;
+
+    private Integer version;
 }

@@ -6,23 +6,17 @@ spring:
     username: root
     password: 123456
     url: jdbc:mysql://127.0.0.1:3306/SpringCloud_Sell?characterEncoding=utf-8&useSSL=false
-  rabbitmq:
-    host: 127.0.0.1
-    port: 5672
-    username: guest
-    password: guest
-  redis:
-    host: 127.0.0.1
-    port: 6379
-env:
-  test13
-girl:
-  name: mo
-  age: 17
-feign:
+eureka:
   client:
-    config:
-      default:
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: basic  
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+#hystrix超时降级时间
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+env:
+  dev

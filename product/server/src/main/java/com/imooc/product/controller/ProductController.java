@@ -96,7 +96,7 @@ public class ProductController {
     }
 
     @PostMapping("/decreaseStock")
-    public void decreaseStock(@RequestBody List<DecreaseStockInput> decreaseStockInputList) {
-        productService.decreaseStock(decreaseStockInputList);
+    public List<ProductInfoOutput> decreaseStock(@RequestBody List<DecreaseStockInput> decreaseStockInputList) {
+        return productService.decreaseStock(decreaseStockInputList);
     }
 }

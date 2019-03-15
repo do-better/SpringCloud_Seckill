@@ -28,6 +28,15 @@ public class RedisService {
         }
     }
 
+    public Boolean setnx(String key, Object value) {
+        try {
+            return redisTemplate.opsForValue().setIfAbsent(key, value);
+        } catch (Exception e) {
+            log.error("redis set异常", e);
+            return false;
+        }
+    }
+
     /**
      * 带过期时间的
      * @param key

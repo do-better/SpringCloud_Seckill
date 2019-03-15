@@ -6,7 +6,7 @@ spring:
       discovery:
         enabled: true
         service-id: CONFIG
-      profile: test
+      profile: dev
     stream:
       bindings:
         myMessage:
@@ -20,17 +20,47 @@ spring:
   sleuth:
     sampler:
       probability: 1
-
+#  rabbitmq:
+#    # confirm模式
+#    publisher-confirms: true
+#    # return机制
+#    publisher-returns: true
+#    # 与return机制结合配置次属性
+#    template:
+#      mandatory: true
+#    addresses: 47.101.194.131:5672
+#  redis:
+#    lettuce:
+#      pool:
+#        # 连接池最大连接数(使用负值表示没有限制) 默认为8
+#        max-active: 8
+#        # 连接池最大阻塞等待时间(使用负值表示没有限制) 默认为-1
+#        max-wait: -1ms
+#        # 连接池中的最大空闲连接 默认为8
+#        max-idle: 8
+#        # 连接池中的最小空闲连接 默认为 0
+#        min-idle: 0
+#  redis:
+#    cluster:
+#      timeout: 1000
+#      nodes: 47.101.194.131:6379,47.101.194.131:6380,47.101.194.131:6381,47.101.194.131:6382,47.101.194.131:6383,47.101.194.131:6384
+#      max-redirects: 3
+#  redis:
+#    host: localhost
+#    port: 6379
+#    jedis:
+#      pool:
+#        max-idle: 500
+#        max-wait: 500ms
+#        max-active: 1000
+#    timeout: 5s
 eureka:
   client:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka/,http://127.0.0.1:8762/eureka/
   instance:
     prefer-ip-address: true
-
-logging:
-  level:
-    root: error
-    org.springframework.cloud.openfeign: error
-#    com.imooc.order.repository.OrderMasterDao: debug
-
+feign:
+  hystrix:
+    #开启降级
+#    enabled: true

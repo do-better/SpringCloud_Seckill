@@ -53,6 +53,10 @@ public class SeckillOrderReceiver {
     @Autowired
     OrderService ordrerService;
 
+    /**
+     * todo 分布式事务
+     * @param message
+     */
     @RabbitListener(queuesToDeclare = @Queue("seckill_order"))
     @Transactional(rollbackFor = Exception.class)
     public void seckillProcess(String message) {
@@ -69,25 +73,27 @@ public class SeckillOrderReceiver {
         //重复秒杀
         if (seckillOrderDetail != null) {
             log.error("-------重复秒杀---------openid: {},productid: {}", orderDTO.getBuyerOpenid(), orderDetail.getProductId());
-            ordrerService.setSeckillResult(orderDTO.getBuyerOpenid(), orderDetail.getProductId(), OrderConst.SECKILL_RESULT_FAIL);
-            return;
-        }
-        // todo 乐观锁，获取版本号
-        ProductInfoOutput productInfo = productClient.getProductById(orderDetail.getProductId());
-        //库存不足
-        if (productInfo.getProductStock() <= 0) {
-            log.error("----------商品库存不足-------productid: {}", productInfo);
-        }
-
-        //计算总价
-        BigDecimal orderAmout = new BigDecimal(BigInteger.ZERO);
-        if (!productInfo.getProductId().equals(orderDetail.getProductId())) {
-            log.error("-------商品id有误---------productInfo.getProductId: {},orderDetail.getProductId: {}", productInfo.getProductId(), orderDetail.getProductId());
-            ordrerService.setSeckillResult(orderDTO.getBuyerOpenid(), orderDetail.getProductId(), OrderConst.SECKILL_RESULT_FAIL);
             return;
         }
 
-        try {
+//        try {
+            //扣库存(调用商品服务),如果扣库存失败，会抛异常，就不用执行下面的动作
+            List<DecreaseStockInput> decreaseStockInputList = orderDTO.getOrderDetailList().stream()
+                    .map(e -> new DecreaseStockInput(e.getProductId(), e.getProductQuantity()))
+                    .collect(Collectors.toList());
+            List<ProductInfoOutput> productInfoList;
+
+            productInfoList = productClient.decreaseStock(decreaseStockInputList);
+
+            ProductInfoOutput productInfo = productInfoList.get(0);
+
+            //计算总价
+            BigDecimal orderAmout = new BigDecimal(BigInteger.ZERO);
+            if (!productInfo.getProductId().equals(orderDetail.getProductId())) {
+                log.error("-------商品id有误---------productInfo.getProductId: {},orderDetail.getProductId: {}", productInfo.getProductId(), orderDetail.getProductId());
+                return;
+            }
+
             //单价*数量
             orderAmout = productInfo.getProductPrice()
                     .multiply(new BigDecimal(orderDetail.getProductQuantity()))
@@ -101,12 +107,6 @@ public class SeckillOrderReceiver {
             //订单详情入库
             seckillOrderDetailRepository.save(orderDetail);
 
-            //扣库存(调用商品服务)
-            List<DecreaseStockInput> decreaseStockInputList = orderDTO.getOrderDetailList().stream()
-                    .map(e -> new DecreaseStockInput(e.getProductId(), e.getProductQuantity()))
-                    .collect(Collectors.toList());
-            productClient.decreaseStock(decreaseStockInputList);
-
             //订单入库
             OrderMaster orderMaster = new OrderMaster();
             BeanUtils.copyProperties(orderDTO, orderMaster);
@@ -116,12 +116,10 @@ public class SeckillOrderReceiver {
             orderMaster.setCreateTime(new Date());
             orderMaster.setUpdateTime(new Date());
             orderMasterRepository.save(orderMaster);
-        } catch (Exception e) {
-            //记录秒杀结果为失败
-            ordrerService.setSeckillResult(orderDTO.getBuyerOpenid(), orderDetail.getProductId(), OrderConst.SECKILL_RESULT_FAIL);
+//        } catch (Exception e) {
             //抛出异常，让事务回滚
-            throw new OrderException(ExceptionEnum.SECKILL_ORDER_ERROR);
-        }
+//            throw new OrderException(ExceptionEnum.SECKILL_ORDER_ERROR);
+//        }
         //如果成功，将orderId存入redis中
         ordrerService.setSeckillResult(orderDTO.getBuyerOpenid(), orderDetail.getProductId(), orderDTO.getOrderId());
     }

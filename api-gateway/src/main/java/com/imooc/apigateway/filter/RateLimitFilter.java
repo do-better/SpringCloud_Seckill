@@ -9,9 +9,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.SERVLET_DETECTION_FILTER_ORDER;
 
 /**
- * 限流
- * Created by 廖师兄
- * 2018-03-11 23:44
+ * 令牌桶算法 限流
  */
 @Component
 public class RateLimitFilter extends ZuulFilter{

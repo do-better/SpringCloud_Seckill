@@ -6,12 +6,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import javax.annotation.Resource;
+
 @Configuration
 public class RedisConfig {
+
+//    @Resource
+//    private LettuceConnectionFactory myLettuceConnectionFactory;
 
     @Bean
     @SuppressWarnings("unchecked")
@@ -45,6 +51,9 @@ public class RedisConfig {
         template.setHashValueSerializer(jackson2JsonRedisSerializer);
 
         template.afterPropertiesSet();
+
+//        // 使用lettuce连接池
+//        template.setConnectionFactory(myLettuceConnectionFactory);
 
         return template;
     }

@@ -30,5 +30,5 @@ public interface ProductService {
      * 扣库存
      * @param decreaseStockInputList
      */
-    void decreaseStock(List<DecreaseStockInput> decreaseStockInputList);
+    List<ProductInfoOutput> decreaseStock(List<DecreaseStockInput> decreaseStockInputList);
 }

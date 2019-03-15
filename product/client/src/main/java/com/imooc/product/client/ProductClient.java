@@ -2,6 +2,7 @@ package com.imooc.product.client;
 
 import com.imooc.product.common.DecreaseStockInput;
 import com.imooc.product.common.ProductInfoOutput;
+import com.netflix.ribbon.proxy.annotation.Hystrix;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
@@ -16,9 +17,10 @@ import java.util.List;
 
 
 /**
- * Created by 廖师兄
- * 2017-12-10 21:04
+ * 降级
+ * feign使用Ribbon负载均衡，默认轮询
  */
+@Hystrix
 @FeignClient(name = "product", fallback = ProductClient.ProductClientFallback.class)
 public interface ProductClient {
 
@@ -30,7 +32,7 @@ public interface ProductClient {
     ProductInfoOutput getProductById(@PathVariable(value = "productId") String productId);
 
     @PostMapping("/product/decreaseStock")
-    void decreaseStock(@RequestBody List<DecreaseStockInput> decreaseStockInputList);
+    List<ProductInfoOutput> decreaseStock(@RequestBody List<DecreaseStockInput> decreaseStockInputList);
 
     @Component
     @Slf4j
@@ -47,8 +49,9 @@ public interface ProductClient {
         }
 
         @Override
-        public void decreaseStock(List<DecreaseStockInput> decreaseStockInputList) {
+        public List<ProductInfoOutput> decreaseStock(List<DecreaseStockInput> decreaseStockInputList) {
             log.error("减库存失败！");
+            return null;
         }
     }
 }
