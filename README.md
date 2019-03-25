@@ -1,6 +1,9 @@
 # SpringCloudSeckill
+
 基于慕课网《SpringCloud微服务实战》开发的秒杀项目
+
 秒杀方法在order模块下
+
 秒杀思路：
 通过Nginx负载均衡到SpringCloud的geteway路由模块，并通过RateLimiter令牌桶算法限流；
 通过Feign自带的Ribbon负载均衡到order订单模块；
